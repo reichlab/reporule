@@ -1,17 +1,13 @@
+"""reichlab_utils logging configuration."""
+
 import sys
 
 import structlog
 
 
-def add_custom_info(logger, method_name, event_dict):
-    # placeholder for custom log info
-    return event_dict
-
-
 def setup_logging():
     shared_processors = [
-        add_custom_info,
-        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S"),
+        structlog.processors.TimeStamper(fmt='%Y-%m-%d %H:%M:%S'),
         structlog.processors.add_log_level,
     ]
 
@@ -19,7 +15,7 @@ def setup_logging():
         # If we're in a terminal, pretty print the logs.
         processors = shared_processors + [
             structlog.dev.ConsoleRenderer(),
-        ]
+        ]  # pragma: no cover
     else:
         # Otherwise, output logs in JSON format
         processors = shared_processors + [

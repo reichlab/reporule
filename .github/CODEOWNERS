@@ -1,3 +1,0 @@
-# require review for core team member for updates to GitHub workflows
-/.github/CODEOWNERS @reichlab/repo-writers
-/.github/workflows/ @reichlab/repo-writers

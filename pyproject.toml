@@ -1,59 +1,65 @@
 [project]
-name = "reichlab-repo-utils"
-description = "Standardize GitHub repository settings"
-license = {text = "MIT License"}
-readme = "README.md"
-requires-python = '>=3.10'
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-]
-dynamic = ["version"]
+name = "reichlab_utils"
+dynamic = ['version']
+description = "A hodgepodge CLI to automate various Reich Lab tasks"
+authors = [{name = "Becky Sweger"}]
+maintainers = [{name = "Becky Sweger"}]
+license = {text = 'MIT License'}
+
+requires-python = '>=3.9'
+readme = 'README.md'
 
 dependencies = [
-    "requests",
     "rich",
     "structlog",
-    "virtualenv>=20.26.6"
+    "typer",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-    "mypy",
-    "pre-commit",
-    "pytest",
-    "ruff",
-    "types-requests",
+    'coverage',
+    'pre-commit',
+    'pytest',
+    'pytest-random-order>=1.1.1',
+    'ruff',
+]
+docs = [
+    'myst-parser>=3.0.1',
+    'sphinx>=7.4.7',
+    'sphinx-autobuild>=2024.10.3',
+    'sphinx-copybutton>=0.5.2',
+    "sphinxext-opengraph>=0.9.1",
 ]
 
-[project.entry-points."console_scripts"]
-add_default_rulesets = "reichlab_repo_utils.add_repo_rulesets:main"
-archive_repos = "reichlab_repo_utils.archive_repos:main"
-list_repos = "reichlab_repo_utils.list_repos:main"
+[project.scripts]
+reichlab_utils = 'reichlab_utils.app:main'
+
+[project.urls]
 
 [build-system]
-# Minimum requirements for the build system to execute.
-requires = ["setuptools", "wheel"]
+requires = ['setuptools>=45', 'wheel', 'setuptools_scm>=8']
+build-backend = 'setuptools.build_meta'
 
-[tools.setuptools]
-packages = ["reichlab_repo_utils"]
+[tool.setuptools.packages.find]
+namespaces = true
+where = ['src']
+
+[tool.setuptools_scm]
+fallback_version = '0.0.0.dev0'
+local_scheme = 'no-local-version'
+
+[tool.pytest.ini_options]
+addopts = '--random-order'
+testpaths = [
+    'test',
+]
 
 [tool.ruff]
 line-length = 120
-lint.extend-select = ["I", "Q"]
+lint.extend-select = ['I', 'Q']
 
 [tool.ruff.lint.flake8-quotes]
-inline-quotes = "double"
+inline-quotes = 'single'
 
 [tool.ruff.format]
-quote-style = "double"
-
-[tool.setuptools.dynamic]
-version = {attr = "reichlab_repo_utils.__version__"}
-
-[tool.mypy]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["rich.*"]
-follow_imports = "skip"
+quote-style = 'single'
