@@ -1,4 +1,4 @@
-"""reichlab_utils logging configuration."""
+"""reichlab logging configuration."""
 
 import sys
 

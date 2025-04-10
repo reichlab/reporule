@@ -1,6 +1,6 @@
 import sys
 
-from reichlab_utils.app import main
+from reichlab.main import main
 
 rc = 1
 try:

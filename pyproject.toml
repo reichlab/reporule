@@ -1,5 +1,5 @@
 [project]
-name = "reichlab_utils"
+name = "reichlab"
 dynamic = ["version"]
 description = "A hodgepodge CLI to automate various Reich Lab tasks"
 authors = [{name = "Becky Sweger"}]
@@ -31,8 +31,8 @@ docs = [
     "sphinxext-opengraph>=0.9.1",
 ]
 
-[project.scripts]
-reichlab_utils = "reichlab_utils.app:main"
+[project.entry-points.console_scripts]
+repo-rulesets = "reichlab.entrypoints.cli:main"
 
 [project.urls]
 

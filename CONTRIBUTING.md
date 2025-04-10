@@ -1,4 +1,4 @@
-# Contributing to reichlab_utils
+# Contributing to reichlab
 
 ## Reporting bugs
 

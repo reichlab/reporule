@@ -631,7 +631,7 @@ wheels = [
 ]
 
 [[package]]
-name = "reichlab-utils"
+name = "reichlab"
 source = { editable = "." }
 dependencies = [
     { name = "rich" },

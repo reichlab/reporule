@@ -1,3 +1,3 @@
-# reichlab_utils
+# reichlab
 
 A hodgepodge CLI to automate various Reich Lab tasks
