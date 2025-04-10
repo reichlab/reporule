@@ -44,6 +44,9 @@ build-backend = "setuptools.build_meta"
 namespaces = true
 where = ["src"]
 
+[tool.setuptools.package-data]
+"reichlab.data" = ["*.json"]
+
 [tool.setuptools_scm]
 fallback_version = "0.0.0.dev0"
 local_scheme = "no-local-version"
