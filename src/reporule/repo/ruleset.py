@@ -1,4 +1,4 @@
-"""Command for adding standard ruleset to a repo."""
+"""Command for adding standard Reichlab ruleset to a repo."""
 
 import typer
 from typing_extensions import Annotated
@@ -11,4 +11,4 @@ def ruleset(
     repo: Annotated[str, typer.Option()],
     org: Annotated[str, typer.Option()] = "reichlab",
 ):
-    print(f"Adding branch rulesets to {org}/{repo}...")
+    print(f"Adding default branch ruleset to {org}/{repo}...")
