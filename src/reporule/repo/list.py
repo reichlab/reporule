@@ -1,4 +1,4 @@
-"""Command for adding standard ruleset to a repo."""
+"""Command for listing a GitHub organization's repos."""
 
 import typer
 from typing_extensions import Annotated
@@ -7,8 +7,7 @@ app = typer.Typer()
 
 
 @app.command(no_args_is_help=True)
-def ruleset(
-    repo: Annotated[str, typer.Option()],
+def security(
     org: Annotated[str, typer.Option()] = "reichlab",
 ):
-    print(f"Adding branch rulesets to {org}/{repo}...")
+    print(f"List repos for {org}...")
