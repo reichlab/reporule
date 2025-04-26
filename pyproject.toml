@@ -1,7 +1,7 @@
 [project]
-name = "reichlab"
+name = "reporule"
 dynamic = ["version"]
-description = "A hodgepodge CLI to automate various Reich Lab tasks"
+description = "A CLI for standardizing repos in a GitHub org"
 authors = [{name = "Becky Sweger"}]
 maintainers = [{name = "Becky Sweger"}]
 license = {text = "MIT License"}
@@ -32,7 +32,7 @@ docs = [
 ]
 
 [project.entry-points.console_scripts]
-reichlab = "reichlab.entrypoints.cli:app"
+reporule = "reporule.entrypoints.cli:app"
 
 [project.urls]
 
@@ -45,7 +45,7 @@ namespaces = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-"reichlab.data" = ["*.json", "*.yml", "*.yaml"]
+"reporule.data" = ["*.json", "*.yml", "*.yaml"]
 
 [tool.setuptools_scm]
 fallback_version = "0.0.0.dev0"

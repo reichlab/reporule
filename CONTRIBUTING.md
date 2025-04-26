@@ -1,4 +1,4 @@
-# Contributing to reichlab
+# Contributing to reporule
 
 ## Reporting bugs
 

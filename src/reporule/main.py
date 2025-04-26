@@ -1,10 +1,10 @@
-"""Create the reichlab CLI."""
+"""Create the reporule CLI."""
 
 import structlog
 import typer
 
-from reichlab.greeting import app as greeting_app
-from reichlab.repo import app as repo_app
+from reporule.greeting import app as greeting_app
+from reporule.repo import app as repo_app
 
 logger = structlog.get_logger()
 

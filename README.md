@@ -1,3 +1,3 @@
-# reichlab
+# reporule
 
-A hodgepodge CLI to automate various Reich Lab tasks
+A CLI to standardize repository settings within a GitHub organization.

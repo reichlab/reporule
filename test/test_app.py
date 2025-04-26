@@ -1,4 +1,4 @@
-"""Initial test file for reichlab."""
+"""Initial test file for reporule."""
 
 
 def test_insert_here():

@@ -1,3 +1,3 @@
-# Using reichlab
+# Using reporule
 
-This page contains information about using the Reichlab CLI.
+This page contains information about using the reporule CLI.
