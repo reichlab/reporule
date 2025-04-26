@@ -45,7 +45,7 @@ namespaces = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-"reichlab.data" = ["*.json"]
+"reichlab.data" = ["*.json", "*.yml", "*.yaml"]
 
 [tool.setuptools_scm]
 fallback_version = "0.0.0.dev0"
