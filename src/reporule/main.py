@@ -11,6 +11,6 @@ logger = structlog.get_logger()
 
 app = typer.Typer(no_args_is_help=True, pretty_exceptions_short=False)
 
-app.add_typer(list_app, name="list")
-app.add_typer(ruleset_app, name="ruleset")
-app.add_typer(security_app, name="security")
+app.add_typer(list_app, name="list", no_args_is_help=True)
+app.add_typer(ruleset_app, name="ruleset", no_args_is_help=True)
+app.add_typer(security_app, name="security", no_args_is_help=True)
