@@ -634,6 +634,7 @@ wheels = [
 name = "reporule"
 source = { editable = "." }
 dependencies = [
+    { name = "requests" },
     { name = "rich" },
     { name = "structlog" },
     { name = "typer" },
@@ -660,6 +661,7 @@ docs = [
 
 [package.metadata]
 requires-dist = [
+    { name = "requests" },
     { name = "rich" },
     { name = "structlog" },
     { name = "typer" },

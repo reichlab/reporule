@@ -3,11 +3,23 @@
 import typer
 from typing_extensions import Annotated
 
-app = typer.Typer()
+import reporule
+from reporule.core import list_repos
+from reporule.util.session import _get_session
+
+app = typer.Typer(
+    add_completion=False,
+    help="List the repositories in a GitHub organization.",
+)
 
 
 @app.command(no_args_is_help=True)
-def security(
-    org: Annotated[str, typer.Option()] = "reichlab",
+def list(
+    org: Annotated[str, typer.Argument()],
 ):
-    print(f"List repos for {org}...")
+    session = _get_session(reporule.TOKEN)
+    list_repos(org, session)
+
+
+if __name__ == "__main__":
+    typer.run(list)
