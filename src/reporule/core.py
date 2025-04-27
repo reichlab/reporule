@@ -50,8 +50,8 @@ def list_repos(org_name: str, session: requests.Session) -> None:
             col_kwargs = {"ratio": 4}
             style_kwargs = {"link": True}
 
-        style = Style(color=color, **style_kwargs)
-        table.add_column(col, style=style, **col_kwargs)
+        style = Style(color=color, **style_kwargs)  # type: ignore
+        table.add_column(col, style=style, **col_kwargs)  # type: ignore
 
     repos = _get_all_repos(org_name, session)
     repo_count = len(repos)

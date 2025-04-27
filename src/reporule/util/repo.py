@@ -11,8 +11,17 @@ def _get_all_repos(org_name: str, session: requests.Session) -> list[dict]:
     :param session: Requests session for interacting with the GitHub API
     :return: List of repositories
     """
+    response = session.get(f"https://api.github.com/orgs/{org_name}")
+    if response.ok:
+        repos_url = f"https://api.github.com/orgs/{org_name}/repos"
+    else:
+        response = session.get(f"https://api.github.com/users/{org_name}")
+        if response.ok:
+            repos_url = f"https://api.github.com/users/{org_name}/repos"
+        else:
+            raise ValueError(f"Organization or user '{org_name}' not found.") from None
+
     repos = []
-    repos_url = f"https://api.github.com/orgs/{org_name}/repos"
     while repos_url:
         response = session.get(repos_url)
         response.raise_for_status()

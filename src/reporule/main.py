@@ -9,7 +9,7 @@ from reporule.repo.security import app as security_app
 
 logger = structlog.get_logger()
 
-app = typer.Typer(no_args_is_help=True, pretty_exceptions_short=False, add_completion=False)
+app = typer.Typer(no_args_is_help=True, pretty_exceptions_show_locals=False, add_completion=False)
 
 app.add_typer(list_app, no_args_is_help=True)
 app.add_typer(ruleset_app, no_args_is_help=True)
