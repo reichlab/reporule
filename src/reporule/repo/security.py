@@ -8,7 +8,8 @@ app = typer.Typer()
 
 @app.command(no_args_is_help=True)
 def security(
-    repo: Annotated[str, typer.Option()],
-    org: Annotated[str, typer.Option()] = "reichlab",
+    org: Annotated[str, typer.Argument(help="GitHub organization or user name.")],
 ):
-    print(f"Adding security settings to {org}/{repo}...")
+    print("Not yet implemented")
+    print("See https://hubverse.io/en/latest/developer/security.html for more information")
+    print("about applying security settings to a GitHub organization")

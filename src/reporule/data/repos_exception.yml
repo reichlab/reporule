@@ -1,0 +1,7 @@
+organizations:
+- name: reichlab
+  repos:
+    - exception_one
+- name: bsweger
+  repos:
+    - bsweger/micro.blog
