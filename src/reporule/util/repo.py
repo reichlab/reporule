@@ -5,11 +5,24 @@ import requests
 
 def _get_all_repos(org_name: str, session: requests.Session) -> list[dict]:
     """
-    Retrieve all repositories from a GitHub organization, handling pagination.
+    Retrieve all repositories from a GitHub organization or user.
 
-    :param org_name: Name of the GitHub organization
-    :param session: Requests session for interacting with the GitHub API
-    :return: List of repositories
+    Parameters:
+    ------------
+    org_name : str
+        Name of a GitHub organization or user
+    session: requests.Session
+        A requests session for using the GitHub API
+
+    Returns:
+    ----------
+    list
+        A list of dictionaries that represents the org/user repositories
+
+    Raises:
+    -------
+    ValueError
+        If org_name is not a valid GitHub organization or user
     """
     response = session.get(f"https://api.github.com/orgs/{org_name}")
     if response.ok:
