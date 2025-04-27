@@ -1,5 +1,5 @@
 {
-  "name": "reichlab-default-branch-protections",
+  "name": "default-branch-protections",
   "target": "branch",
   "enforcement": "active",
   "conditions": {
