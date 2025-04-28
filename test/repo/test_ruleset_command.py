@@ -20,6 +20,7 @@ def test_ruleset_command_all_repos(setenvvar):
 
     # Mock _get_repo to return mocked_repos
     with (
+        patch("reporule.repo.ruleset._verify_org_or_user", return_value="org") as mock_verify_org_or_user,
         patch("reporule.repo.ruleset._get_repo", return_value=mocked_repos) as mock_get_repo,
         patch("reporule.repo.ruleset._get_repo_exceptions", return_value=mocked_exceptions) as mock_get_exceptions,
         patch("reporule.repo.ruleset.apply_branch_ruleset") as mock_apply_ruleset,
@@ -33,6 +34,7 @@ def test_ruleset_command_all_repos(setenvvar):
         actual_calls = mock_apply_ruleset.call_args_list
 
         assert result.exit_code == 0
+        mock_verify_org_or_user.assert_called_once_with("starfleet")
         mock_get_repo.assert_called_once_with("starfleet")
         mock_get_exceptions.assert_called_once_with("starfleet")
 

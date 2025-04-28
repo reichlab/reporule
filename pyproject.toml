@@ -23,6 +23,7 @@ dev = [
     "pre-commit",
     "pytest",
     "pytest-random-order>=1.1.1",
+    "pytest-socket",
     "ruff",
 ]
 docs = [
@@ -58,6 +59,7 @@ fallback_version = "0.0.0.dev0"
 local_scheme = "no-local-version"
 
 [tool.pytest.ini_options]
+addopts = "--disable-socket"
 testpaths = [
     "test",
 ]
