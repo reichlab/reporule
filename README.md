@@ -14,6 +14,22 @@ in the project's repository:
 
 You can also use reporule as a CLI.
 
+### Setup
+
+These instructions assume that you have
+[uv](https://docs.astral.sh/uv/getting-started/installation/) installed
+(uv will handle any required Python installs and virtual environments).
+
+reporule is not released on PyPI, so you will need to install it from GitHub
+
+```bash
+uv venv
+uv pip install git+https://github.com/reichlab/reporule
+```
+
+Verify that `reporule` is installed correctly:
+
+
 ```bash
 ➜ uv run reporule --help
 
@@ -27,19 +43,6 @@ You can also use reporule as a CLI.
 │ ruleset                                                                                            │
 │ security                                                                                           │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────╯
-```
-
-### Setup
-
-These instructions assume that you have
-[uv](https://docs.astral.sh/uv/getting-started/installation/) installed
-(uv will handle any required Python installs and virtual environments).
-
-reporule is not released on PyPI, so you will need to install it from GitHub
-
-```bash
-uv venv
-uv pip install git+https://github.com/reichlab/reporule
 ```
 
 To use the CLI, you will you need a GitHub personal access token with the following

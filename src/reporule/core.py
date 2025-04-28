@@ -5,11 +5,15 @@ from typing import NamedTuple
 
 import requests
 import structlog
+from rich import print
 from rich.console import Console
 from rich.style import Style
 from rich.table import Table
 
-from reporule.util.repo import _get_all_repos
+import reporule
+from reporule.util.repo import _get_repo
+from reporule.util.ruleset import _get_branch_rulesets
+from reporule.util.session import _get_session
 
 logger = structlog.get_logger()
 
@@ -22,17 +26,21 @@ class OutputColumns(NamedTuple):
     id: str
 
 
-def list_repos(org_name: str, session: requests.Session) -> None:
+def list_repos(org_name: str, session: requests.Session | None) -> None:
     """
-    List repositories in an organization.
+    List public repositories associated with a GitHub organization or user.
 
     Parameters:
     ------------
     org_name : str
          Name of a GitHub organization
-    session : requests.Session
-         A requests session for using the GitHub API
+    session: requests.Session
+        An optional requests session for using the GitHub API. If not
+        passed, a new session will be created.
     """
+    if session is None:
+        session = _get_session(reporule.TOKEN)
+
     # Settings for the output columns when listing repo information
     output_column_list = list(OutputColumns._fields)
     output_column_colors = ["green", "magenta", "cyan", "blue", "yellow"]
@@ -50,10 +58,10 @@ def list_repos(org_name: str, session: requests.Session) -> None:
             col_kwargs = {"ratio": 4}
             style_kwargs = {"link": True}
 
-        style = Style(color=color, **style_kwargs)
-        table.add_column(col, style=style, **col_kwargs)
+        style = Style(color=color, **style_kwargs)  # type: ignore
+        table.add_column(col, style=style, **col_kwargs)  # type: ignore
 
-    repos = _get_all_repos(org_name, session)
+    repos = _get_repo(org_name, session=session)
     repo_count = len(repos)
 
     for repo in repos:
@@ -72,3 +80,49 @@ def list_repos(org_name: str, session: requests.Session) -> None:
     logger.info("Repository report complete", count=repo_count)
 
     console.print(table)
+
+
+def apply_branch_ruleset(repo_list: list[str], ruleset: dict, session: requests.Session | None = None) -> int:
+    """
+    Apply a branch ruleset to every specified repository
+
+    Parameters:
+    ------------
+    repo_list: list
+        A list of repository names that will have the ruleset applied.
+        List items are in the format "org/repo"
+    ruleset: dict
+        The GitHub ruleset to apply
+    session: requests.Session
+        An optional requests session for using the GitHub API. If not
+        passed, a new session will be created.
+
+    Returns:
+    ---------
+    int
+        The number of repositories that were updated with the ruleset
+    """
+    if session is None:
+        session = _get_session(reporule.TOKEN)
+
+    update_count = 0
+    ruleset_name = ruleset.get("name")
+    print("Applying ruleset:", ruleset_name)
+    for repo in repo_list:
+        branch_protection_url = f"https://api.github.com/repos/{repo}/rulesets"
+
+        # Get repo's existing rulesets
+        existing_rulsets = _get_branch_rulesets(repo)
+        if ruleset_name in existing_rulsets:
+            print(f"  • {repo}: skipped, already has ruleset {ruleset.get('name')}")
+            continue
+
+        # Apply the branch ruleset
+        response = session.post(branch_protection_url, json=ruleset)
+        if response.ok:
+            print(f"  • {repo}: applied ruleset")
+            update_count += 1
+        else:
+            logger.error("Failed to apply branch ruleset", repo=repo, ruleset=ruleset_name, response=response.json())
+
+    return update_count

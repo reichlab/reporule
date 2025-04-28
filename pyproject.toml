@@ -6,10 +6,11 @@ authors = [{name = "Becky Sweger"}]
 maintainers = [{name = "Becky Sweger"}]
 license = {text = "MIT License"}
 
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 readme = "README.md"
 
 dependencies = [
+    "pyyaml",
     "requests",
     "rich",
     "structlog",
@@ -22,6 +23,7 @@ dev = [
     "pre-commit",
     "pytest",
     "pytest-random-order>=1.1.1",
+    "pytest-socket",
     "ruff",
 ]
 docs = [
@@ -41,6 +43,10 @@ reporule = "reporule.entrypoints.cli:app"
 requires = ["setuptools>=45", "wheel", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
 
+[tool.mypy]
+ignore_missing_imports = true
+disable_error_code = ["import-untyped"]
+
 [tool.setuptools.packages.find]
 namespaces = true
 where = ["src"]
@@ -53,7 +59,7 @@ fallback_version = "0.0.0.dev0"
 local_scheme = "no-local-version"
 
 [tool.pytest.ini_options]
-addopts = "--random-order"
+addopts = "--disable-socket"
 testpaths = [
     "test",
 ]
