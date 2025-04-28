@@ -29,7 +29,7 @@ def test_ruleset_command_all_repos(setenvvar):
         ]
 
         # Run the CLI command
-        result = runner.invoke(app, ["ruleset", "starfleet", "--all"])
+        result = runner.invoke(app, ["--verbose", "ruleset", "starfleet", "--all"])
         actual_calls = mock_apply_ruleset.call_args_list
 
         assert result.exit_code == 0

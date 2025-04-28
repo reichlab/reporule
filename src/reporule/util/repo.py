@@ -1,9 +1,12 @@
 """Functions to get information about GitHub repositories."""
 
 import requests
+import structlog
 
 import reporule
 from reporule.util.session import _get_session
+
+logger = structlog.get_logger()
 
 
 def _verify_org_or_user(org_name: str, session: requests.Session | None = None) -> str | None:
@@ -29,9 +32,11 @@ def _verify_org_or_user(org_name: str, session: requests.Session | None = None) 
         session = _get_session(reporule.TOKEN)
     response = session.get(f"https://api.github.com/orgs/{org_name}")
     if response.ok:
+        logger.debug("GitHub organization found", org_name=org_name, org_info=response.json())
         return "org"
     response = session.get(f"https://api.github.com/users/{org_name}")
     if response.ok:
+        logger.debug("GitHub user found", user_name=org_name, user_info=response.json())
         return "user"
     return None
 

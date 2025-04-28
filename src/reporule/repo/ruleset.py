@@ -1,5 +1,6 @@
 """Command for adding a ruleset to a repo or set of repos."""
 
+import structlog
 import typer
 from rich import print
 from typing_extensions import Annotated
@@ -7,6 +8,8 @@ from typing_extensions import Annotated
 from reporule.core import apply_branch_ruleset
 from reporule.util.repo import _get_repo, _verify_org_or_user
 from reporule.util.ruleset import _get_repo_exceptions, _load_branch_ruleset
+
+logger = structlog.get_logger()
 
 app = typer.Typer()
 
@@ -74,6 +77,14 @@ def ruleset(
     exception_set = _get_repo_exceptions(org)
     ruleset_repos = repo_set - exception_set
     repos_to_skip = set.intersection(exception_set, repo_set)
+
+    logger.debug(
+        "Calculated repo lists",
+        exception_set=exception_set,
+        ruleset_repos=ruleset_repos,
+        repos_to_skip=repos_to_skip,
+        repos_to_update=len(ruleset_repos),
+    )
 
     if len(repos_to_skip) > 0:
         print(f"Skipping {len(repos_to_skip)} repositories on the exception list:")

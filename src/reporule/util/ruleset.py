@@ -3,11 +3,14 @@
 import json
 
 import requests
+import structlog
 import yaml
 
 import reporule
 from reporule import REPORULE_PATH
 from reporule.util.session import _get_session
+
+logger = structlog.get_logger()
 
 
 def _load_branch_ruleset(branchset_name: str = "default_branch_protections") -> dict:
@@ -33,9 +36,12 @@ def _load_branch_ruleset(branchset_name: str = "default_branch_protections") -> 
     try:
         file_name = f"{branchset_name}.json"
         with open(REPORULE_PATH / "data" / file_name, "r") as file:
-            return json.load(file)
+            branch_ruleset = json.load(file)
+            logger.debug("Branch ruleset loaded", ruleset_name=branchset_name, branch_ruleset=branch_ruleset)
     except FileNotFoundError:
         raise ValueError(f"Branch ruleset '{branchset_name}' not found.") from None
+
+    return branch_ruleset
 
 
 def _get_branch_rulesets(repo_name: str, session: requests.Session | None = None) -> list:
@@ -62,6 +68,7 @@ def _get_branch_rulesets(repo_name: str, session: requests.Session | None = None
     response.raise_for_status()
 
     rulesets = [r.get("name") for r in response.json()]
+    logger.debug("Existing rulesets", repo=repo_name, rulesets=rulesets)
     return rulesets
 
 
@@ -93,6 +100,7 @@ def _get_repo_exceptions(org_name: str) -> set[str]:
         file_name = REPORULE_PATH / "data" / "repos_exception.yml"
         with open(file_name, "r") as file:
             repo_exceptions = yaml.safe_load(file)
+        logger.debug("Repo exceptions loaded", repo_exceptions=repo_exceptions)
         repos = set()
         for org in repo_exceptions.get("organizations", []):
             if org.get("name") == org_name:
