@@ -24,7 +24,7 @@ class OutputColumns(NamedTuple):
     id: str
 
 
-def list_repos(org_name: str, repo_list: list[dict]) -> None:
+def list_repos(org_name: str, repo_list: list[dict]) -> Table:
     """
     Display a rich-formatted table of GitHub repositories.
 
@@ -76,6 +76,7 @@ def list_repos(org_name: str, repo_list: list[dict]) -> None:
     logger.info("Repository report complete", count=repo_count)
 
     console.print(table)
+    return table
 
 
 def apply_branch_ruleset(repo_list: list[str], ruleset: dict, session: requests.Session | None = None) -> int:
