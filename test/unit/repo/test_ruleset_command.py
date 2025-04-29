@@ -2,6 +2,7 @@
 
 from unittest.mock import patch
 
+import pytest
 from typer.testing import CliRunner
 
 from reporule.main import app
@@ -58,3 +59,56 @@ def test_ruleset_command_all_repos():
         # repo_list is the first argument passed to apply_branch_ruleset
         repo_list = call_args[0]
         assert set(repo_list) == set(expected_ruleset_repos)
+
+
+def test_ruleset_command_single_repos():
+    """Test ruleset command with --repo and --ruleset options.
+
+    See comments in test_ruleset_command_all_repos for explanation
+    of the call objects associated with Python mocks and how they're used.
+    """
+    mocked_repos = [
+        {"name": "cerritos", "full_name": "starfleet/cerritos", "archived": False},
+    ]
+    mocked_exceptions = set()
+
+    with (
+        patch("reporule.repo.ruleset._verify_org_or_user", return_value="user") as mock_verify_org_or_user,
+        patch("reporule.repo.ruleset._load_branch_ruleset", return_value={}) as mock_load_branch_ruleset,
+        patch("reporule.repo.ruleset._get_repo", return_value=mocked_repos) as mock_get_repo,
+        patch("reporule.repo.ruleset._get_repo_exceptions", return_value=mocked_exceptions) as mock_get_exceptions,
+        patch("reporule.repo.ruleset.apply_branch_ruleset") as mock_apply_ruleset,
+    ):
+        # Run the CLI command
+        result = runner.invoke(app, ["ruleset", "starfleet", "--repo", "cerritos", "--ruleset", "mock_ruleset"])
+        assert result.exit_code == 0
+
+        mock_verify_org_or_user.assert_called_once_with("starfleet")
+        mock_load_branch_ruleset.assert_called_once_with("mock_ruleset")
+        mock_get_repo.assert_called_once_with("starfleet", "cerritos")
+        mock_get_exceptions.assert_called_once_with("starfleet")
+
+        mock_apply_ruleset.assert_called_once
+        call_args, call_kwargs = mock_apply_ruleset.call_args_list[0]
+        repo_list = call_args[0]
+        assert repo_list == ["starfleet/cerritos"]
+
+
+@pytest.mark.parametrize(
+    "args",
+    [
+        (["ruleset", "starfleet", "--repo", "cerritos", "--all"]),
+        (
+            [
+                "ruleset",
+                "starfleet",
+            ]
+        ),
+        (["ruleset", "--all"]),
+    ],
+)
+def test_ruleset_command_bad_params(args):
+    """Invalid CLI params should fail"""
+    with patch("reporule.repo.ruleset._verify_org_or_user", return_value="org"):
+        result = runner.invoke(app, args)
+        assert result.exit_code != 0
