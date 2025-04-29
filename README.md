@@ -29,7 +29,6 @@ uv pip install git+https://github.com/reichlab/reporule
 
 Verify that `reporule` is installed correctly:
 
-
 ```bash
 ➜ uv run reporule --help
 
@@ -41,7 +40,6 @@ Verify that `reporule` is installed correctly:
 ╭─ Commands ─────────────────────────────────────────────────────────────────────────────────────────╮
 │ list                                                                                               │
 │ ruleset                                                                                            │
-│ security                                                                                           │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
