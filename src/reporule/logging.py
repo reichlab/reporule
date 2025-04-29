@@ -1,5 +1,7 @@
 """reporule logging configuration."""
 
+import logging
+import os
 import sys
 
 import structlog
@@ -23,7 +25,12 @@ def setup_logging():
             structlog.processors.JSONRenderer(),
         ]
 
+    # get log level from env variable or default to INFO
+    level = os.environ.get("LOG_LEVEL", "INFO").upper()
+    LOG_LEVEL = getattr(logging, level)
+
     structlog.configure(
         processors=processors,
         cache_logger_on_first_use=True,
+        wrapper_class=structlog.make_filtering_bound_logger(LOG_LEVEL),
     )

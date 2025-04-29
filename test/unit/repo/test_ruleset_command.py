@@ -33,7 +33,7 @@ def test_ruleset_command_all_repos(mock_functions):
     mock_functions["get_repo"].return_value = mocked_repos
     mock_functions["get_repo_exceptions"].return_value = mocked_exceptions
 
-    result = runner.invoke(app, ["--verbose", "ruleset", "starfleet", "--all"])
+    result = runner.invoke(app, ["ruleset", "starfleet", "--all"])
     assert result.exit_code == 0
 
     # --ruleset option not passed via cli command, so its default value
