@@ -11,9 +11,7 @@ from rich.style import Style
 from rich.table import Table
 
 import reporule
-from reporule.util.repo import _get_repo
-from reporule.util.ruleset import _get_branch_rulesets
-from reporule.util.session import _get_session
+from reporule.util import _get_branch_rulesets, _get_repo, _get_session
 
 logger = structlog.get_logger()
 

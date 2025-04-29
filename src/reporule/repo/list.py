@@ -5,7 +5,7 @@ from typing_extensions import Annotated
 
 import reporule
 from reporule.core import list_repos
-from reporule.util.session import _get_session
+from reporule.util import _get_session
 
 app = typer.Typer(
     add_completion=False,

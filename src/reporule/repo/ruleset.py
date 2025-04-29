@@ -6,8 +6,7 @@ from rich import print
 from typing_extensions import Annotated
 
 from reporule.core import apply_branch_ruleset
-from reporule.util.repo import _get_repo, _verify_org_or_user
-from reporule.util.ruleset import _get_repo_exceptions, _load_branch_ruleset
+from reporule.util import _get_repo, _get_repo_exceptions, _load_branch_ruleset, _verify_org_or_user
 
 logger = structlog.get_logger()
 
