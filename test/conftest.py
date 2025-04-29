@@ -44,3 +44,26 @@ def repo_list():
     ]
 
     return repos
+
+
+@pytest.fixture()
+def ruleset_list():
+    rulesets = [
+        {
+            "id": 123,
+            "name": "default-branch-protections",
+            "target": "branch",
+            "source_type": "Repository",
+            "enforcement": "active",
+        },
+        {"id": 456, "name": "vulcan_ruleset", "target": "branch", "source_type": "Repository", "enforcement": "active"},
+        {
+            "id": 789,
+            "name": "klingon_ruleset",
+            "target": "branch",
+            "source_type": "Repository",
+            "enforcement": "active",
+        },
+    ]
+
+    return rulesets
