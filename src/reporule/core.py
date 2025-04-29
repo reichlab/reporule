@@ -11,7 +11,7 @@ from rich.style import Style
 from rich.table import Table
 
 import reporule
-from reporule.util import _get_branch_rulesets, _get_repo, _get_session
+from reporule.util import _get_branch_rulesets, _get_session
 
 logger = structlog.get_logger()
 
@@ -24,20 +24,18 @@ class OutputColumns(NamedTuple):
     id: str
 
 
-def list_repos(org_name: str, session: requests.Session | None) -> None:
+def list_repos(org_name: str, repo_list: list[dict]) -> None:
     """
-    List public repositories associated with a GitHub organization or user.
+    Display a rich-formatted table of GitHub repositories.
 
     Parameters:
     ------------
     org_name : str
-         Name of a GitHub organization
-    session: requests.Session
-        An optional requests session for using the GitHub API. If not
-        passed, a new session will be created.
+        Name of a GitHub organization or user
+    repo_list : dict
+        A list of dictionaries that represent repository objects as returned by
+        GitHub's API.
     """
-    if session is None:
-        session = _get_session(reporule.TOKEN)
 
     # Settings for the output columns when listing repo information
     output_column_list = list(OutputColumns._fields)
@@ -59,7 +57,7 @@ def list_repos(org_name: str, session: requests.Session | None) -> None:
         style = Style(color=color, **style_kwargs)  # type: ignore
         table.add_column(col, style=style, **col_kwargs)  # type: ignore
 
-    repos = _get_repo(org_name, session=session)
+    repos = repo_list
     repo_count = len(repos)
 
     for repo in repos:

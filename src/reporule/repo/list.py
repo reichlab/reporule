@@ -3,9 +3,8 @@
 import typer
 from typing_extensions import Annotated
 
-import reporule
 from reporule.core import list_repos
-from reporule.util import _get_session
+from reporule.util import _get_repo
 
 app = typer.Typer(
     add_completion=False,
@@ -17,8 +16,8 @@ app = typer.Typer(
 def list(
     org: Annotated[str, typer.Argument()],
 ):
-    session = _get_session(reporule.TOKEN)
-    list_repos(org, session)
+    repos = _get_repo(org)
+    list_repos(org, repos)
 
 
 if __name__ == "__main__":
