@@ -7,7 +7,6 @@ import typer
 
 from reporule.repo.list import app as list_app
 from reporule.repo.ruleset import app as ruleset_app
-from reporule.repo.security import app as security_app
 
 logger = structlog.get_logger()
 
@@ -24,4 +23,3 @@ def main(verbose: bool = typer.Option(False, "--verbose", "-v")):
 
 app.add_typer(list_app, no_args_is_help=True)
 app.add_typer(ruleset_app, no_args_is_help=True)
-app.add_typer(security_app, no_args_is_help=True)
