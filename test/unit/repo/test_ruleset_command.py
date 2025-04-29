@@ -9,7 +9,8 @@ from reporule.main import app
 runner = CliRunner()
 
 
-def test_ruleset_command_all_repos(setenvvar):
+def test_ruleset_command_all_repos():
+    """Test ruleset command with --all option and no --ruleset option."""
     mocked_repos = [
         {"name": "enterprise", "full_name": "starfleet/enterprise", "archived": False},
         {"name": "voyager", "full_name": "starfleet/voyager", "archived": False},
@@ -18,9 +19,9 @@ def test_ruleset_command_all_repos(setenvvar):
     ]
     mocked_exceptions = {"starfleet/enterprise"}
 
-    # Mock _get_repo to return mocked_repos
     with (
         patch("reporule.repo.ruleset._verify_org_or_user", return_value="org") as mock_verify_org_or_user,
+        patch("reporule.repo.ruleset._load_branch_ruleset", return_value={}) as mock_load_branch_ruleset,
         patch("reporule.repo.ruleset._get_repo", return_value=mocked_repos) as mock_get_repo,
         patch("reporule.repo.ruleset._get_repo_exceptions", return_value=mocked_exceptions) as mock_get_exceptions,
         patch("reporule.repo.ruleset.apply_branch_ruleset") as mock_apply_ruleset,
@@ -31,21 +32,29 @@ def test_ruleset_command_all_repos(setenvvar):
 
         # Run the CLI command
         result = runner.invoke(app, ["--verbose", "ruleset", "starfleet", "--all"])
-        actual_calls = mock_apply_ruleset.call_args_list
-
         assert result.exit_code == 0
+
+        # --ruleset option not passed via cli command, so its default value
+        # should be used to call _load_branch_ruleset
+        mock_load_branch_ruleset.assert_called_once_with("default_branch_protections")
+
+        # other supporting util functions should be called with
+        # the cli's org argument
         mock_verify_org_or_user.assert_called_once_with("starfleet")
         mock_get_repo.assert_called_once_with("starfleet")
         mock_get_exceptions.assert_called_once_with("starfleet")
 
-        # the number of calls to apply_branch_ruleset should equal
-        # the number of repos we're applying the ruleset to
-        assert len(actual_calls[0].args) == len(expected_ruleset_repos)
+        # apply_branch_rulesets is called once, and the first parameter
+        # is repo_list, which should be a list of the mocked_repos that
+        # are eligible to have rulesets applied (i.e., are not archived
+        # or not on the exception list)
+        mock_apply_ruleset.assert_called_once
 
-        # repo_name args passed to apply_branch_ruleset should match names
-        # in the expected_ruleset_repos
-        # (this is some weird parsing of the mocked objects calls because
-        # using assert_has_calls intermittently failed due to the
-        # ordering of lists, even when using any_order=True)
-        actual_repo_list = actual_calls[0].args[0]
-        assert set(actual_repo_list) == set(expected_ruleset_repos)
+        # because apply_branch_rulesets is only called once, grab the first
+        # (and only) call object from the mock_apply_ruleset's call_args_list;
+        # a call object is a tuple that represents args and kwargs used to call the mock
+        # function, and we unpack it accordingly
+        call_args, call_kwargs = mock_apply_ruleset.call_args_list[0]
+        # repo_list is the first argument passed to apply_branch_ruleset
+        repo_list = call_args[0]
+        assert set(repo_list) == set(expected_ruleset_repos)
