@@ -22,7 +22,6 @@ dev = [
     "coverage",
     "pre-commit",
     "pytest",
-    "pytest-random-order>=1.1.1",
     "pytest-socket",
     "pytest-mock",
     "ruff",
