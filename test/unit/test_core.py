@@ -33,11 +33,3 @@ def test_apply_branch_ruleset(default_branch_ruleset, repo_list, mocker, mock_se
 
     rulesets_applied = apply_branch_ruleset(repo_list, default_branch_ruleset, mock_session)
     assert rulesets_applied == 4
-
-
-def test_apply_branch_ruleset_skip(mocker, mock_session, repo_list):
-    """Only apply branch ruleset to repos that don't already have a ruleset of the same name."""
-    mocker.patch("reporule.core._get_branch_rulesets", return_value=["vulcan_ruleset", "klingon_ruleset"])
-
-    rulesets_applied = apply_branch_ruleset(repo_list, {"name": "vulcan_ruleset"})
-    assert rulesets_applied == 0

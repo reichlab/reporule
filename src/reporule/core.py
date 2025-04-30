@@ -11,7 +11,7 @@ from rich.style import Style
 from rich.table import Table
 
 import reporule
-from reporule.util import _get_branch_rulesets, _get_session
+from reporule.util import _get_branch_rulesets, _get_repo_exceptions, _get_session
 
 logger = structlog.get_logger()
 
@@ -32,7 +32,7 @@ def list_repos(org_name: str, repo_list: list[dict]) -> Table:
     ------------
     org_name : str
         Name of a GitHub organization or user
-    repo_list : dict
+    repo_list : list
         A list of dictionaries that represent repository objects as returned by
         GitHub's API.
     """
@@ -108,12 +108,6 @@ def apply_branch_ruleset(repo_list: list[str], ruleset: dict, session: requests.
     for repo in repo_list:
         branch_protection_url = f"https://api.github.com/repos/{repo}/rulesets"
 
-        # Get repo's existing rulesets
-        existing_rulsets = _get_branch_rulesets(repo)
-        if ruleset_name in existing_rulsets:
-            print(f"  • {repo}: skipped, already has ruleset {ruleset.get('name')}")
-            continue
-
         # Apply the branch ruleset
         response = session.post(branch_protection_url, json=ruleset)
         if response.ok:
@@ -123,3 +117,41 @@ def apply_branch_ruleset(repo_list: list[str], ruleset: dict, session: requests.
             logger.error("Failed to apply branch ruleset", repo=repo, ruleset=ruleset_name, response=response.json())
 
     return update_count
+
+
+def get_ruleset_repo_status(org: str, repo_list: list[dict], ruleset: dict) -> dict[str, set[str]]:
+    """
+    Determine the ruleset eligibiility status for GitHub repository on the incoming repos list.
+
+    Parameters:
+    ------------
+    org : str
+        The GitHub organization or user name.
+    repo_list : list
+        A list of dictionaries that represent repository objects as returned by
+        GitHub's API.
+    ruleset : dict
+        The ruleset to check against the repositories
+
+    Returns:
+    ---------
+    dict[str, str]
+        A dictionary mapping repository names to their ruleset status.
+    """
+    repo_status = {}
+    ruleset_name = ruleset["name"]
+
+    all_repos = {r["full_name"] for r in repo_list}
+    archived_repos = {r["full_name"] for r in repo_list if r.get("archived")}
+    exceptions = _get_repo_exceptions(org)
+    eligible_repos = all_repos - archived_repos - exceptions
+    existing_ruleset = {repo for repo in eligible_repos if ruleset_name in _get_branch_rulesets(repo)}
+
+    repo_status["archived"] = archived_repos
+    repo_status["exceptions"] = exceptions
+    repo_status["existing_ruleset"] = existing_ruleset
+    repo_status["eligible_repos"] = eligible_repos - existing_ruleset
+
+    logger.debug("Repo eligibility for ruleset", ruleset_name=ruleset_name, repo_status=repo_status)
+
+    return repo_status

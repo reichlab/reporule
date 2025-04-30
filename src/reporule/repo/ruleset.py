@@ -5,8 +5,12 @@ import typer
 from rich import print
 from typing_extensions import Annotated
 
-from reporule.core import apply_branch_ruleset
-from reporule.util import _get_repo, _get_repo_exceptions, _load_branch_ruleset, _verify_org_or_user
+from reporule.core import apply_branch_ruleset, get_ruleset_repo_status
+from reporule.util import (
+    _get_repo,
+    _load_branch_ruleset,
+    _verify_org_or_user,
+)
 
 logger = structlog.get_logger()
 
@@ -45,11 +49,15 @@ def ruleset(
         ),
     ] = None,
     ruleset: Annotated[
-        str, typer.Option("--ruleset", help="Ruleset (from data dir) to apply. Defaults to default_branch_protections")
+        str,
+        typer.Option(
+            "--ruleset", help="Ruleset filename (from data dir) to apply. Defaults to default_branch_protections"
+        ),
     ] = "default_branch_protections",
     all: Annotated[
         bool, typer.Option("--all", "-a", help="Apply ruleset to all org not on the exception list.")
     ] = False,
+    dryrun: Annotated[bool, typer.Option("--dryrun", help="Display repos to update without apply changes.")] = False,
 ):
     # Either we're applying rulesets to a single repo or to all repos
     if repo is None and all is False:
@@ -59,39 +67,39 @@ def ruleset(
 
     try:
         ruleset_dict = _load_branch_ruleset(ruleset)
+        ruleset_name = ruleset_dict["name"]
     except Exception:
         raise typer.BadParameter(f"Unable to load ruleset name {ruleset}.")
 
     if all:
-        # create a list of repos (in org/repo format) to apply the ruleset to
-        # (exclude archived repos)
         repos = _get_repo(org)
-        repo_set = {f"{org}/{r['name']}" for r in repos if not r.get("archived")}
     else:
         repos = _get_repo(org, repo)
-        repo = repos[0]["name"]
-        repo_set = {f"{org}/{repo}"}
 
-    # remove repos on the exception list
-    exception_set = _get_repo_exceptions(org)
-    ruleset_repos = repo_set - exception_set
-    repos_to_skip = set.intersection(exception_set, repo_set)
-
-    logger.debug(
-        "Calculated repo lists",
-        exception_set=exception_set,
-        ruleset_repos=ruleset_repos,
-        repos_to_skip=repos_to_skip,
-        repos_to_update=len(ruleset_repos),
-    )
+    prefix = "DRY RUN:" if dryrun else ""
+    print(f"{prefix} Getting list of eligible repositories...")
+    repo_status = get_ruleset_repo_status(org, repos, ruleset_dict)
+    if repo is not None:
+        # User is applying ruleset to specific repo. Unless that single repo
+        # is on the exception list, we don't care about the exceptions.
+        repo_status["exceptions"] = repo_status["exceptions"].intersection({repo})
+    repos_to_skip = repo_status["archived"].union(repo_status["exceptions"]).union(repo_status["existing_ruleset"])
+    eligible_repos = repo_status["eligible_repos"]
 
     if len(repos_to_skip) > 0:
-        print(f"Skipping {len(repos_to_skip)} repositories on the exception list:")
+        print(
+            f"\n{prefix} Skipping repositories because they are archived, on the exception list or already have a ruleset named {ruleset_name}:"
+        )
         for repo in repos_to_skip:
             print(f"  • {repo}")
+        print(f"{prefix} Total repositories skipped: {len(repos_to_skip)}")
 
     total_rulesets_applied = 0
-    if len(ruleset_repos) > 0:
-        total_rulesets_applied = apply_branch_ruleset(list(ruleset_repos), ruleset_dict)  # type: ignore
-
-    print(f"\nApplied {ruleset} to {total_rulesets_applied} repositories.")
+    num_repos = len(eligible_repos)
+    if dryrun:
+        print(f"\n{prefix} would apply ruleset to {num_repos} repositories:")
+        for repo in eligible_repos:
+            print(f"  • {repo}")
+    else:
+        total_rulesets_applied = apply_branch_ruleset(list(eligible_repos), ruleset_dict)  # type: ignore
+        print(f"\nApplied {ruleset} to {total_rulesets_applied} repositories.")
