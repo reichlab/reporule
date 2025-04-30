@@ -1,6 +1,7 @@
 """Utility functions for reporules."""
 
 import json
+from pathlib import Path
 
 import requests
 import structlog
@@ -94,7 +95,7 @@ def _get_repo(org_name: str, repo_name: str | None = None, session: requests.Ses
     return repos
 
 
-def _get_repo_exceptions(org_name: str) -> set[str]:
+def _get_repo_exceptions(org_name: str, file_name: Path) -> set[str]:
     """
     Retrieve all repos on the exception list for a given organization or user.
 
@@ -102,6 +103,9 @@ def _get_repo_exceptions(org_name: str) -> set[str]:
     ------------
     org_name : str
         Name of a GitHub organization or user
+    file_name : Path
+        Optional full path to the yaml file containing the exceptions list.
+        Defaults to "data/repos_exception.yml".
     session: requests.Session
         An optional requests session for using the GitHub API. If not
         passed, a new session will be created.
@@ -120,7 +124,8 @@ def _get_repo_exceptions(org_name: str) -> set[str]:
         be parsed.
     """
     try:
-        file_name = REPORULE_PATH / "data" / "repos_exception.yml"
+        if file_name is None:
+            file_name = REPORULE_PATH / "data" / "repos_exception.yml"
         with open(file_name, "r") as file:
             repo_exceptions = yaml.safe_load(file)
         logger.debug("Repo exceptions loaded", repo_exceptions=repo_exceptions)

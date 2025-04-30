@@ -1,9 +1,11 @@
 """Unit tests for util.py."""
 
+from pathlib import Path
+
 import pytest
 import requests
 
-from reporule.util import _get_branch_rulesets, _get_repo
+from reporule.util import _get_branch_rulesets, _get_repo, _get_repo_exceptions
 
 
 @pytest.fixture
@@ -15,6 +17,15 @@ def mock_session(mocker):
     response.status_code = 200
     session = mocker.MagicMock(spec=requests.Session)
     return session, response
+
+
+@pytest.fixture()
+def test_file_path() -> Path:
+    """
+    Return path to the integration test files.
+    """
+    test_file_path = Path(__file__).parent.joinpath("data")
+    return test_file_path
 
 
 def test__get_branch_rulesets(mocker, mock_session, ruleset_list):
@@ -69,3 +80,11 @@ def test__get_repo_single_repo(mocker, mock_session, org_user_value, repo_list):
 
     call_args = session.get.call_args_list[0].args
     assert "https://api.github.com/repos/starfleet/enterprise" in call_args
+
+
+def test__get_repo_exceptions(test_file_path):
+    """Test contents and format of repo exceptions."""
+    exceptions_file = test_file_path / "exceptions.yml"
+
+    exceptions = _get_repo_exceptions("starfleet", exceptions_file)
+    assert exceptions == {"starfleet/excelsior", "starfleet/voyager"}

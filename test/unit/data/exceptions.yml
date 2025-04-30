@@ -1,0 +1,9 @@
+organizations:
+- name: starfleet
+  repos:
+    - voyager
+    - excelsior
+- name: federation
+  repos:
+    - deep_space_nine
+    - starbase_80
