@@ -1,10 +1,22 @@
 organizations:
 - name: reichlab
+  # source of reichlab exceptions is
+  # https://docs.google.com/spreadsheets/d/1UaVsqGQ2uyI42t8HWTQjt0MthQJ-o4Yom0-Q2ahBnJc/
+  # where will_break column is TRUE
   repos:
-    - exception_one
-- name: bsweger
+    - Covid-19-Hub-Vizualization
+    - covid19-forecast-hub
+    - covid19-forecast-hub-web
+    - covidHubUtils
+    - covidModels
+    - flu-hosp-forecasts
+    - flusight
+    - flusight-eval
+    - nba-predictions
+    - reichlab.github.io
+- name: hubverse-org
+  # to use reporule ruleset with hubverse-io, add any repo that should
+  # be excluded from the ruleset application to the list below
   repos:
-    - micro.blog
-    - another_exception
-- name: test_org
-
+    - sample-exception-1
+    - sample-exception-2
