@@ -97,7 +97,7 @@ def ruleset(
     total_rulesets_applied = 0
     num_repos = len(eligible_repos)
     if dryrun:
-        print(f"\n{prefix} would apply ruleset to {num_repos} repositories:")
+        print(f"\n{prefix} would apply ruleset {ruleset_name} to {num_repos} repositories:")
         for repo in eligible_repos:
             print(f"  • {repo}")
     else:

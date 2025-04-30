@@ -167,6 +167,18 @@ Before applying the ruleset to a repo, the command will ensure it meets the foll
   [`data/repos_exception.yml`](https://github.com/reichlab/reporule/blob/main/src/reporule/data/repos_exception.yml)
 - does not already have a ruleset with the same name
 
-> [!TIP]
-> The `ruleset` command has a `--dryrun` option, which will display the impacted repositories without
-> updating any of their rulesets.
+### Dryrun option
+
+The `ruleset` command has a `--dryrun` option.
+
+When this option is passed, `uv run reporule ruleset` will display the list of
+repositories to be updated without applying any changes.
+
+```bash
+➜ uv run reporule ruleset bendystraw --all --dryrun
+DRY RUN: Getting list of eligible repositories...
+
+DRY RUN: would apply ruleset default-branch-protections to 2 repositories:
+  • bendystraw/westernma-syrup
+  • bendystraw/beeradvocate-reviews-waffle
+```
