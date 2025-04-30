@@ -50,6 +50,14 @@ div.sphinxsidebar a {
     color: #003d45;
 }
 
+div.viewcode-block:target {
+    background: none;
+}
+
+div.viewcode-block a:visited {
+    color: #5FCDE3
+}
+
 code.descname {
     color: #6840ab;
 }
@@ -60,8 +68,6 @@ th.field-name {
 }
 
 tt, code {
-    color: #F8F8F2;
-    background: #015259;
     border-radius: 0.3em;
     padding: 0.0em 0.3em;
 }
@@ -78,10 +84,6 @@ a.reference.internal, a.reference.internal:hover {
     border-bottom: none;
 }
 
-a.reference.internal:hover code {
-    background: #027bab
-}
-
 a.reference.internal:hover code.xref span.pre {
     color: #F8F8F2;
     background: #027bab;
@@ -91,11 +93,6 @@ a.reference.internal:hover code.xref span.pre {
 tt.xref, code.xref, a tt {
     background: none;
     border-bottom: none;
-}
-
-code.literal {
-    color: #F8F8F2;
-    background: #015259;
 }
 
 pre {
