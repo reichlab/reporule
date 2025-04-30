@@ -4,4 +4,7 @@ organizations:
     - exception_one
 - name: bsweger
   repos:
-    - bsweger/micro.blog
+    - micro.blog
+    - another_exception
+- name: test_org
+

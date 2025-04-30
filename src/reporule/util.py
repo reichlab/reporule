@@ -129,7 +129,11 @@ def _get_repo_exceptions(org_name: str) -> set[str]:
             if org.get("name") == org_name:
                 repos = set(org.get("repos", []))
 
-        return repos
+        # return the full name of each repo on the exception list
+        repo_full_name = set()
+        for repo in repos:
+            repo_full_name.add(f"{org_name}/{repo}")
+        return repo_full_name
 
     except FileNotFoundError:
         raise ValueError(f"Unable to retrieve repo exceptions list from {file_name}.") from None
