@@ -82,8 +82,14 @@ def test__get_repo_single_repo(mocker, mock_session, org_user_value, repo_list):
     assert "https://api.github.com/repos/starfleet/enterprise" in call_args
 
 
-def test__get_repo_exceptions(test_file_path):
-    """Test contents and format of repo exceptions."""
+def test__get_repo_exceptions_default(test_file_path):
+    """Test contents and format of repo exceptions file bundled with the package."""
+    exceptions = _get_repo_exceptions("reichlab")
+    assert len(exceptions) > 0
+
+
+def test__get_repo_exceptions_pass_file(test_file_path):
+    """Test contents and format of repo exceptions when passed a file."""
     exceptions_file = test_file_path / "exceptions.yml"
 
     exceptions = _get_repo_exceptions("starfleet", exceptions_file)
