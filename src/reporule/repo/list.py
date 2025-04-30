@@ -8,7 +8,7 @@ from reporule.util import _get_repo
 
 app = typer.Typer(
     add_completion=False,
-    help="List the public repositories that belong to a GitHub organization or user.",
+    help="List public repositories belonging to a GitHub organization or user.",
 )
 
 
@@ -16,6 +16,12 @@ app = typer.Typer(
 def list(
     org: Annotated[str, typer.Argument()],
 ):
+    """
+    Display a list of public repositories and their selected attributes for a
+    specific GitHub organization or user.
+
+    EXAMPLE: reporule list hubverse-org
+    """
     print(f"Getting public repos for {org}...")
     repos = _get_repo(org)
     list_repos(org, repos)

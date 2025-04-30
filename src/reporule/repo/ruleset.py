@@ -40,25 +40,44 @@ def validate_org(org: str) -> str:
 @app.command(no_args_is_help=True)
 def ruleset(
     org: Annotated[str, typer.Argument(help="GitHub organization or user name.", callback=validate_org)],
+    all: Annotated[
+        bool,
+        typer.Option(
+            "--all", help="Apply ruleset to all org/user repos not on the exception list. Cannot be used with --repo."
+        ),
+    ] = False,
     repo: Annotated[
         str | None,
         typer.Option(
             "--repo",
-            "-r",
-            help="GitHub repository name (must belong to the specified org). Ignored when --all is specified.",
+            help="GitHub repository name. Cannot be used with --all.",
         ),
     ] = None,
     ruleset: Annotated[
         str,
         typer.Option(
-            "--ruleset", help="Ruleset filename (from data dir) to apply. Defaults to default_branch_protections"
+            "--ruleset",
+            help=(
+                "Ruleset filename to apply (without the .json extension). "
+                "The file must be in the reporule/data directory."
+            ),
         ),
     ] = "default_branch_protections",
-    all: Annotated[
-        bool, typer.Option("--all", "-a", help="Apply ruleset to all org not on the exception list.")
-    ] = False,
-    dryrun: Annotated[bool, typer.Option("--dryrun", help="Display repos to update without apply changes.")] = False,
+    dryrun: Annotated[bool, typer.Option("--dryrun", help="Display repos to update without applying changes.")] = False,
 ):
+    """
+    Apply a specified ruleset to a single repository or to all eligible
+    repositories that belong to a GitHub organization or user.
+
+    By default, this command will apply the ruleset defined in
+    data/default_branch_protections.json
+
+    Rulesets will not be applied to, archived repositories, repositories on
+    the exception list (data/repos_exception.yml), or repositories that already
+    have a ruleset of the same name.
+
+    EXAMPLE: reporule ruleset reichlab --all --dryrun
+    """
     # Either we're applying rulesets to a single repo or to all repos
     if repo is None and all is False:
         raise typer.BadParameter("Either --all or --repo must be specified")
