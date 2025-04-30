@@ -110,7 +110,8 @@ def _get_repo_exceptions(org_name: str) -> set[str]:
     ----------
     set
         A set of repositories on the organization's exception_list
-        (as defined in data/repos_exception.yml)
+        (as defined in data/repos_exception.yml). Repositories in the
+        reflect their full name (i.e., org/repo or user/repo).
 
     Raises:
     -------

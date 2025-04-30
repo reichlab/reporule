@@ -41,6 +41,15 @@ def repo_list():
             "visibility": "private",
             "created_at": "2340-05-01T00:00:00Z",
         },
+        {
+            "id": 654,
+            "name": "excelsior",
+            "full_name": "starfleet/excelsior",
+            "archived": False,
+            "fork": False,
+            "visibility": "public",
+            "created_at": "2340-05-01T00:00:00Z",
+        },
     ]
 
     return repos
