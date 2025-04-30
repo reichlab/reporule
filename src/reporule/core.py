@@ -20,8 +20,8 @@ class OutputColumns(NamedTuple):
     name: str
     created_at: str
     archived: str
-    visibility: str
-    id: str
+    fork: str
+    gh_id: str
 
 
 def list_repos(org_name: str, repo_list: list[dict]) -> Table:
@@ -44,7 +44,7 @@ def list_repos(org_name: str, repo_list: list[dict]) -> Table:
     # Create the output table and columns
     console = Console()
     table = Table(
-        title=f"Repositories in the {org_name} GitHub organization",
+        title=f"Public repositories in the {org_name} GitHub organization",
     )
     for col, color in zip_longest(output_column_list, output_column_colors, fillvalue="cyan"):
         # add additional attributes, depending on the column
@@ -60,18 +60,26 @@ def list_repos(org_name: str, repo_list: list[dict]) -> Table:
     repos = repo_list
     repo_count = len(repos)
 
+    repo_dict = {}
     for repo in repos:
         r = OutputColumns(
             name=f"[link={repo.get('html_url')}]{repo.get('name')}[/link]",
             created_at=str(repo.get("created_at", "")),
             archived=str(repo.get("archived", "")),
-            visibility=str(repo.get("visibility", "")),
-            id=str(repo.get("id", "")),
+            fork=str(repo.get("fork", "")),
+            gh_id=str(repo.get("id", "")),
         )
-        try:
+        repo_dict[repo["name"]] = r
+    sorted_repo_names = sorted(repo_dict)
+
+    # use sorted repo names to add repo data to the
+    # table object in alphabetical order
+    try:
+        for repo_name in sorted_repo_names:
+            r = repo_dict[repo_name]
             table.add_row(*r)
-        except Exception as e:
-            logger.error(f"Error adding row for repo {r.name}: {e}")
+    except Exception as e:
+        logger.error(f"Error adding row for repo {r.name}: {e}")
 
     logger.info("Repository report complete", count=repo_count)
 
