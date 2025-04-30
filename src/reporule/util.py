@@ -95,7 +95,7 @@ def _get_repo(org_name: str, repo_name: str | None = None, session: requests.Ses
     return repos
 
 
-def _get_repo_exceptions(org_name: str, file_name: Path) -> set[str]:
+def _get_repo_exceptions(org_name: str, file_name: Path | None = None) -> set[str]:
     """
     Retrieve all repos on the exception list for a given organization or user.
 

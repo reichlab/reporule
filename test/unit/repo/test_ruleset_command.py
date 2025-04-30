@@ -49,10 +49,11 @@ def repo_status():
         (["ruleset", "starfleet", "--all", "--ruleset", "vulcan_ruleset"], {"starfleet/cerritos"}, "vulcan_ruleset"),
     ],
 )
-def test_ruleset_commands_all(mock_functions, repo_status, cli_args, eligible_repo_set, ruleset_file_name):
+def test_ruleset_commands_all(mock_functions, repo_list, repo_status, cli_args, eligible_repo_set, ruleset_file_name):
     """Test the ruleset CLI command when used with --all option."""
     repo_status["eligible_repos"] = eligible_repo_set
     mock_functions["get_ruleset_repo_status"].return_value = repo_status
+    mock_functions["get_repo"].return_value = repo_list
 
     result = runner.invoke(app, cli_args)
     assert result.exit_code == 0
@@ -64,6 +65,9 @@ def test_ruleset_commands_all(mock_functions, repo_status, cli_args, eligible_re
 
     mock_functions["verify_org_or_user"].assert_called_once_with("starfleet")
     mock_functions["get_repo"].assert_called_once_with("starfleet")
+    mock_functions["get_ruleset_repo_status"].assert_called_once_with(
+        "starfleet", mock_functions["get_repo"].return_value, mock_functions["load_branch_ruleset"].return_value
+    )
     mock_functions["apply_branch_ruleset"].assert_called_once
 
     # first parameter passed to apply_branch_ruleset should match repo_set["eligible_repos"]
@@ -74,10 +78,11 @@ def test_ruleset_commands_all(mock_functions, repo_status, cli_args, eligible_re
     assert set(repo_list) == set(expected_ruleset_repos)
 
 
-def test_ruleset_commands_repo(mock_functions, repo_status):
+def test_ruleset_commands_repo(mock_functions, repo_list, repo_status):
     """Test the ruleset CLI command when used with --repo option."""
     repo_status["eligible_repos"] = {"starfleet/cerritos"}
     mock_functions["get_ruleset_repo_status"].return_value = repo_status
+    mock_functions["get_repo"].return_value = {"name": "cerritos", "full_name": "starfleet/cerritos", "archived": False}
 
     result = runner.invoke(
         app,
@@ -99,6 +104,9 @@ def test_ruleset_commands_repo(mock_functions, repo_status):
 
 def test_ruleset_commands_no_eligible_repos(mock_functions, repo_status):
     """Test the ruleset CLI command when no repos are eligible for ruleset update."""
+    repo_status["exceptions"] = {"starfleet/excelsior"}
+    repo_status["archived"] = {"starfleet/voyager"}
+    repo_status["existing_ruleset"] = {"starfleet/enterprise"}
     mock_functions["get_ruleset_repo_status"].return_value = repo_status
 
     result = runner.invoke(
@@ -106,6 +114,12 @@ def test_ruleset_commands_no_eligible_repos(mock_functions, repo_status):
         ["ruleset", "starfleet", "--all"],
     )
     assert result.exit_code == 0
+
+    # CLI should display any archived, exception, and existing ruleset repos
+    # to the user as being "skipped" when trying to apply the specified ruleset
+    assert "starfleet/excelsior" in result.output
+    assert "starfleet/voyager" in result.output
+    assert "starfleet/enterprise" in result.output
 
     mock_functions["apply_branch_ruleset"].assert_not_called
 
@@ -136,10 +150,18 @@ def test_ruleset_commands_dryrun(mock_functions, repo_status):
             ]
         ),
         (["ruleset", "--all"]),
+        (["ruleset", "starfleet", "--all", "--ruleset", "nonexistent_ruleset"]),
     ],
 )
 def test_ruleset_command_bad_params(mocker, args):
     """Invalid CLI params should fail"""
     mocker.patch("reporule.repo.ruleset._verify_org_or_user", return_value="org")
     result = runner.invoke(app, args)
+    assert result.exit_code != 0
+
+
+def test_ruleset_command_invalid_org_or_user(mocker):
+    """Ruleset command should fail if org/user doesn't exist on GitHub."""
+    mocker.patch("reporule.repo.ruleset._verify_org_or_user", return_value=None)
+    result = runner.invoke(app, ["ruleset", "github_user_or_org_that_doesnt_exist", "--all"])
     assert result.exit_code != 0
