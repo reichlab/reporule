@@ -14,6 +14,7 @@ organizations:
     - flusight-eval
     - nba-predictions
     - reichlab.github.io
+    - decisions
 - name: hubverse-org
   # to use reporule ruleset with hubverse-io, add any repo that should
   # be excluded from the ruleset application to the list below
