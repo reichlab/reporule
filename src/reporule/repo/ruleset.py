@@ -37,7 +37,10 @@ def validate_org(org: str) -> str:
     return org
 
 
-@app.command(no_args_is_help=True)
+@app.command(
+    no_args_is_help=True,
+    epilog="visit https://github.com/reichlab/reporule/tree/main/src/reporule/data to update the repo exception list",
+)
 def ruleset(
     org: Annotated[str, typer.Argument(help="GitHub organization or user name.", callback=validate_org)],
     all: Annotated[
