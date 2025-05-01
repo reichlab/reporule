@@ -7,7 +7,6 @@
    :maxdepth: 2
    :caption: Contents:
 
-   usage
    CONTRIBUTING
    CHANGELOG
 
