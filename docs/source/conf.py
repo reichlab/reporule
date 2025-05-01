@@ -104,11 +104,13 @@ html_static_path = ["_static"]
 # further. For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    "description": f"A hodgepodge CLI to automate various Reich Lab tasks\n{release}",
-    # 'github_user': '',
-    # 'github_repo': '',
-    # 'github_banner': True,
-    # 'github_button': False,
+    "logo": "reichlab.png",
+    "logo_name": True,
+    "description": "Bulk GitHub rulesets",
+    "github_user": "reichlab",
+    "github_repo": "reporule",
+    "github_banner": True,
+    "github_button": False,
     "font_family": "'Roboto', Georgia, sans",
     "head_font_family": "'Roboto', Georgia, serif",
     "code_font_family": "'Roboto Mono', 'Consolas', monospace",
@@ -132,7 +134,7 @@ html_theme_options = {
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-# html_favicon = None
+html_favicon = "reichlab_favicon.png"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

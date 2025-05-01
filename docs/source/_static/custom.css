@@ -21,8 +21,9 @@ ul.simple p {
 
 
 div.sphinxsidebarwrapper h1.logo {
+    font-size: 150%;
     text-align: center;
-    margin: 20px 0 0 0;
+    margin: 5px 0 0 0;
 }
 
 div.sphinxsidebar p.blurb {
@@ -155,4 +156,5 @@ div.footer a {
         border: none;
         padding-left: none;
     }
+
 }
