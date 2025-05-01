@@ -14,20 +14,25 @@ reporule is a command line interface (CLI) with two commands:
 
 ### Setup (one time)
 
-- Install `[uv](https://docs.astral.sh/uv/getting-started/installation/)` to manage the Python installs and environment
-- Create a fine-grained personal GitHub token
+> [!NOTE]
+> To use the reporule [`ruleset` command](#ruleset-command), you need admin
+> access to the repos being updated (collaborator status is not
+> sufficient). Organization owners can add rulesets, as can members of
+> a team assigned to the `all-repository-admin` role. \
+> [More information](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets).
+
+1. Install `[uv](https://docs.astral.sh/uv/getting-started/installation/)` to manage the Python installs and environment
+2. Create a GitHub personal access token
+3. Create a fine-grained personal GitHub token (classic)
 
    1. Follow these
-      [GitHub directions for creating a fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-   2. In the _Repository access_ section, choose _All repositories_ (this will
-      give the token access to the same repository permissions that your
-      personal GitHub account has)
-   3. In the _Permissions_ section, expand the _Repository permissions_ section
-   4. Find _Administration_ on list set its _Access_ to _Read and write_
-   5. Click _Generate token_ at bottom of the page
-   6. Click _Generate token_ again when prompted
+      [GitHub directions for creating a classic personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic)
+   2. On the _New personal access token (classic)_ page, select the following scopes:
+      - `repo` (full control of private repositories)
+      - `write:org` (in the `admin:org` section)
+   3. Click _Generate token_ at bottom of the page
 
-- Save the GitHub token as an environment variable called `GITHUB_TOKEN`
+4. Save the GitHub token as an environment variable called `GITHUB_TOKEN`
 
 ## Using reporule
 
