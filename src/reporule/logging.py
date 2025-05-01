@@ -8,10 +8,28 @@ import structlog
 
 
 def setup_logging():
+    """Set up structlog-based logging configuration."""
+    # get log level from env variable or default to INFO
+    level = os.environ.get("LOG_LEVEL", "INFO").upper()
+    LOG_LEVEL = getattr(logging, level)
+
     shared_processors = [
         structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S"),
         structlog.processors.add_log_level,
     ]
+
+    # For DEBUG-level logs, add caller info
+    if LOG_LEVEL == logging.DEBUG:
+        shared_processors.append(
+            structlog.processors.CallsiteParameterAdder(
+                [
+                    structlog.processors.CallsiteParameter.FILENAME,
+                    structlog.processors.CallsiteParameter.FUNC_NAME,
+                    structlog.processors.CallsiteParameter.LINENO,
+                    structlog.processors.CallsiteParameter.PATHNAME,
+                ],
+            )
+        )
 
     if sys.stderr.isatty():
         # If we're in a terminal, pretty print the logs.
@@ -24,10 +42,6 @@ def setup_logging():
             structlog.processors.dict_tracebacks,
             structlog.processors.JSONRenderer(),
         ]
-
-    # get log level from env variable or default to INFO
-    level = os.environ.get("LOG_LEVEL", "INFO").upper()
-    LOG_LEVEL = getattr(logging, level)
 
     structlog.configure(
         processors=processors,
