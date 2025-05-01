@@ -66,17 +66,24 @@ def ruleset(
     dryrun: Annotated[bool, typer.Option("--dryrun", help="Display repos to update without applying changes.")] = False,
 ):
     """
-    Apply a specified ruleset to a single repository or to all eligible
-    repositories that belong to a GitHub organization or user.
+    \b
+    Apply a specified ruleset to a single repo or to all eligible
+    repos that belong to a GitHub organization or user.
 
-    By default, this command will apply the ruleset defined in
-    data/default_branch_protections.json
+    \b
+    The default ruleset applied is defined in data/default_branch_protections.json
 
-    Rulesets will not be applied to, archived repositories, repositories on
-    the exception list (data/repos_exception.yml), or repositories that already
-    have a ruleset of the same name.
+    \b
+    Rulesets will not be applied to archived repos, repos listed in
+    repos_exceptions.yml, or repos that already have a ruleset of the same name.
 
-    EXAMPLE: reporule ruleset reichlab --all --dryrun
+    \b
+    EXAMPLES:
+    ----------
+    reporule ruleset reichlab --all --dryrun
+    reporule ruleset reichlab --repo reichlab.io
+    reporule ruleset hubverse-io --all --ruleset hubverse_branch_protections
+
     """
     # Either we're applying rulesets to a single repo or to all repos
     if repo is None and all is False:

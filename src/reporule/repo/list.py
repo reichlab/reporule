@@ -17,10 +17,16 @@ def list(
     org: Annotated[str, typer.Argument()],
 ):
     """
-    Display a list of public repositories and their selected attributes for a
-    specific GitHub organization or user.
+    \b
+    Display a list of public repositories and their
+    selected attributes for a specific GitHub
+    organization or user.
+    \b
 
-    EXAMPLE: reporule list hubverse-org
+    \b
+    EXAMPLE:
+    --------
+    reporule list hubverse-org
     """
     print(f"Getting public repos for {org}...")
     repos = _get_repo(org)
