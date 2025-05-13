@@ -10,6 +10,9 @@ requires-python = ">=3.10"
 readme = "README.md"
 
 dependencies = [
+    # remove line 15 (click) when Typer releases a fix for Click 8.2
+    # https://github.com/fastapi/typer/discussions/1215
+    "click<8.2.0",
     "pyyaml",
     "requests",
     "rich",
