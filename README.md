@@ -21,7 +21,7 @@ reporule is a command line interface (CLI) with two commands:
 > a team assigned to the `all-repository-admin` role. \
 > [More information](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets).
 
-1. Install `[uv](https://docs.astral.sh/uv/getting-started/installation/)` to manage the Python installs and environment
+1. Install [`uv`](https://docs.astral.sh/uv/getting-started/installation/) to manage the Python installs and environment
 2. Create a GitHub personal access token
 3. Create a fine-grained personal GitHub token (classic)
 

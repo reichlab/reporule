@@ -83,7 +83,7 @@ take a few minutes but only needs to be done once).
 4. Make sure the `pre-commit` checks are working correctly:
 
     ```sh
-    uv run pre-commit install
+    uv run pre-commit run --all
     ```
 
 ### Updating your development environment
