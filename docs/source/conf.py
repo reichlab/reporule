@@ -49,6 +49,10 @@ myst_enable_extensions = [
     "tasklist",
 ]
 
+# Generate anchors for headings (h1-h3) so in-page links like
+# [`ruleset` command](#ruleset-command) resolve to their headings.
+myst_heading_anchors = 3
+
 # Settings from the copybutton's config
 # https://github.com/executablebooks/sphinx-copybutton/blob/master/docs/conf.py
 # There are useful for ensuring that the copy button only copies code
